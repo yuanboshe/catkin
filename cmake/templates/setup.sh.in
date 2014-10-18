@@ -46,8 +46,12 @@ fi
 # invoke Python script to generate necessary exports of environment variables
 _SETUP_TMP=`mktemp /tmp/setup.sh.XXXXXXXXXX`
 if [ $? -ne 0 -o ! -f "$_SETUP_TMP" ]; then
-  echo "Could not create temporary file: $_SETUP_TMP"
-  return 1
+  # try alternative location for temporary file
+  _SETUP_TMP=`mktemp /run/setup.sh.XXXXXXXXXX`
+  if [ $? -ne 0 -o ! -f "$_SETUP_TMP" ]; then
+    echo "Could not create temporary file: $_SETUP_TMP"
+    return 1
+  fi
 fi
 CATKIN_SHELL=$CATKIN_SHELL "$_SETUP_UTIL" $@ > $_SETUP_TMP
 _RC=$?
